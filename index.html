@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enroll users</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Enrol users to Gandalf</h1>
+    </header>
+
+    <!-- Step 1 placeholder -->
+    <section>
+        <h2>Step 1</h2>
+        <p>Cet outil a pour but de faciliter l'enrôlement des utilisateurs sur Gandalf, que ce soit en masse ou individuellement.</p>
+    </section>
+
+    <!-- Step 2.1: Télécharger le fichier JSON des cours non terminés -->
+    <section>
+        <h2>Step 2.1: Télécharger le fichier JSON des cours non terminés</h2>
+        <a href="https://gandalf.epitech.eu/blocks/configurable_reports/viewreport.php?id=208&download=1&format=json" target="_blank">
+            <button>Télécharger les cours non terminés</button>
+        </a>
+    </section>
+
+    <!-- Step 2.2: Charger un fichier JSON et sélectionner des cours -->
+    <section>
+        <h2>Step 2.2: Importer le fichier JSON et sélectionner des cours</h2>
+        <input type="file" id="jsonFileInput" accept=".json">
+        <button id="selectAllButton">Tout sélectionner</button>
+        <ul id="courseList">
+            <!-- La liste des cours sera affichée ici -->
+        </ul>
+    </section>
+
+    <!-- Step 2.3: Entrer des adresses e-mail -->
+    <section>
+        <h2>Step 2.3: Entrer des adresses e-mail</h2>
+        
+        <div class="step-2-3-container">
+            <!-- Partie gauche : Méthode manuelle -->
+            <div class="manual-input">
+                <h3>Méthode manuelle</h3>
+                <p>Cette méthode permet d'insérer des utilisateurs via un copier-coller de leurs adresses e-mail. Pour chaque utilisateur, il sera nécessaire de sélectionner manuellement son campus ainsi que son rôle.</p>
+                <div class="input-group">
+                    <textarea id="emailInput" rows="10" cols="30" placeholder="Copiez et collez les adresses e-mail ici"></textarea>
+                    <button id="processEmailsButton">Valider les adresses e-mail</button>
+                </div>
+            </div>
+            
+
+            <!-- Partie droite : Méthode automatisée -->
+            <div class="automated-input">
+                <h3>Méthode automatisée</h3>
+                <p>Cette méthode permet d'automatiser la récupération et l'importation d'un ensemble complet d'utilisateurs. Le campus et le rôle sont des valeurs déjà définies.</p>
+                <a href="https://gandalf.epitech.eu/blocks/configurable_reports/viewreport.php?id=262&courseid=1&download=1&format=json" target="_blank">
+                    <button>Télécharger le fichier JSON des utilisateurs (étudiants et pédagogues internes)</button>
+                </a>
+                <br><br>
+                <input type="file" id="automatedJsonFile" accept=".json">
+                <br><br>
+                <button id="processAutomatedJsonButton">Importer le fichier JSON</button>
+                <br><br>
+                <label for="idnumberSelect">Choisir une promotion :</label>
+                <select id="idnumberSelect" style="display: none;"></select>
+                <button id="filterIdnumberButton" style="display: none;">Filtrer</button>
+            </div>
+        </div>
+
+        <!-- Output commun : liste des utilisateurs générée -->
+        <ul id="emailList">
+            <!-- La liste des adresses e-mail et des menus déroulants pour les groupes sera affichée ici -->
+        </ul>
+    </section>
+
+    <!-- Step 2.4: Visualiser et télécharger le CSV -->
+    <section>
+        <h2>Step 2.4: Visualiser et télécharger le CSV</h2>
+        <button id="generateCsvPreviewButton">Générer l'aperçu du CSV</button>
+        <table id="csvPreviewTable" border="1">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Course1</th>
+                    <th>Group1</th>
+                    <th>Role1</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Le contenu du CSV sera prévisualisé ici -->
+            </tbody>
+        </table>
+        <button id="downloadCsvButton" style="display: none;">Télécharger le CSV</button>
+    </section>
+
+    <!-- Step 3 placeholder -->
+    <section>
+        <h2>Step 3</h2>
+        <p>Maintenant, il vous faut importer le fichier CSV dans Gandalf. Voici les étapes à suivre :
+            <ul>
+                <li>Accédez à Gandalf > <a href="https://gandalf.epitech.eu/admin/tool/uploaduser/index.php" target="_blank">upload users</a>.</li>
+                <li>Cliquez sur le bouton "Choose a file..." et sélectionnez le fichier CSV.</li>
+                <li>Pour "CSV delimiter", sélectionnez le point-virgule (le 2e élément de la liste déroulante).</li>
+                <li>Cliquez sur le bouton "Upload users".</li>
+                <li>Sur la vue suivante, dans "Settings > Upload type", sélectionnez "Update existing users only".</li>
+                <li>Cliquez de nouveau sur le bouton "Upload users".</li>
+                <li>Et voilà ! Attention à ne pas fermer la page, le traitement peut prendre du temps si le fichier CSV est volumineux.</li>
+            </ul>
+        </p>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+/* ===== Style général ===== */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Section globale */
+section {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+    border-left: 5px solid #0091d3; /* Couleur principale #0091d3 */
+}
+
+/* Titre des sections */
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* Paragraphe explicatif */
+p {
+    color: #555;
+}
+
+/* Boutons */
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #0091d3; /* Couleur principale */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: #33a7dd; /* Survol avec nuance de bleu */
+}
+
+/* Champs d'entrée de fichier */
+input[type="file"] {
+    display: block;
+    margin: 10px 0;
+}
+
+/* Textarea pour les adresses e-mail */
+textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: 'Arial', sans-serif;
+    margin-bottom: 10px;
+}
+
+/* Style des conteneurs de la méthode manuelle et automatisée */
+.step-2-3-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.manual-input, .automated-input {
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.manual-input {
+    border-left: 5px solid #0091d3; /* Couleur principale pour la bordure manuelle */
+}
+
+.automated-input {
+    border-left: 5px solid #33a7dd; /* Nuance pour la méthode automatisée */
+}
+
+.manual-input h3, .automated-input h3 {
+    font-size: 1.25em;
+    color: #333;
+}
+
+/* Table (Aperçu du CSV) */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f0f0f0;
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Délimitation des étapes */
+.section-header {
+    background-color: #0091d3; /* Couleur principale */
+    color: white;
+    padding: 10px;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    border-radius: 5px 5px 0 0;
+}
