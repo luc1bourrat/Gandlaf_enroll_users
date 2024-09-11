@@ -6,6 +6,25 @@ let emailsData = []; // Stocker les données des utilisateurs pour la méthode m
 let automatedData = []; // Stocker les données du JSON automatisé
 let filteredData = []; // Stocker les données filtrées après sélection de l'idnumber
 let idnumbers = new Set(); // Stocker les idnumbers uniques
+let isGroup2Generated = false; // Pour savoir si les groupes uniques sont générés
+
+const groupTrigramMap = {
+    "TOULOUSE": "TLS",
+    "NICE": "NCE",
+    "COTONOU": "COT",
+    "PARIS": "PAR",
+    "MARSEILLE": "MAR",
+    "STRASBOURG": "STG",
+    "LILLE": "LIL",
+    "NANCY": "NCY",
+    "MONTPELLIER": "MPL",
+    "RENNES": "REN",
+    "NANTES": "NAN",
+    "LYON": "LYN",
+    "BORDEAUX": "BOR",
+    "SAINT-ANDRÉ": "REU",
+    "MULHOUSE": "MUL"
+};
 
 const groups = [
     "all_BORDEAUX", "all_COTONOU", "all_LILLE", "all_LYON", "all_MARSEILLE", "all_MONTPELLIER",
@@ -83,25 +102,16 @@ function processEmails() {
     emailList.innerHTML = ''; // Vider la liste actuelle
 
     const emails = emailInput.split(/[\s,;]+/).filter(email => email.trim() !== '');
-    emailsData = emails.map((email, index) => ({ username: email.trim(), group1: "", role1: "teacher" }));
+    emailsData = emails.map((email, index) => ({ username: email.trim(), group1: "", role1: "teacher", group2: "" }));
 
     emails.forEach((email, index) => {
         const listItem = document.createElement('li');
 
         // Création du menu déroulant pour group1
-        let selectGroup = `<select id="groupSelect${index}" onchange="updateGroup(${index})">`;
-        groups.forEach(group => {
-            selectGroup += `<option value="${group}">${group}</option>`;
-        });
-        selectGroup += `</select>`;
+        let selectGroup = generateSelect(`groupSelect${index}`, groups, groups[0], `updateGroup(${index})`);
 
         // Création du menu déroulant pour role1
-        let selectRole = `
-            <select id="roleSelect${index}" onchange="updateRole(${index})">
-                <option value="student" selected>student</option>
-                <option value="teacher">teacher</option>
-            </select>
-        `;
+        let selectRole = generateSelect(`roleSelect${index}`, ['student', 'teacher'], 'student', `updateRole(${index})`);
 
         listItem.innerHTML = `<span>${email.trim()}</span> ${selectGroup} ${selectRole}`;
         emailList.appendChild(listItem);
@@ -110,6 +120,17 @@ function processEmails() {
         emailsData[index].group1 = document.getElementById(`groupSelect${index}`).value;
         emailsData[index].role1 = document.getElementById(`roleSelect${index}`).value;
     });
+}
+
+// Générer un élément <select> HTML
+function generateSelect(id, options, defaultValue, onChangeFunction) {
+    let select = `<select id="${id}" onchange="${onChangeFunction}">`;
+    options.forEach(option => {
+        const isSelected = option === defaultValue ? 'selected' : '';
+        select += `<option value="${option}" ${isSelected}>${option}</option>`;
+    });
+    select += `</select>`;
+    return select;
 }
 
 function updateGroup(index) {
@@ -193,6 +214,51 @@ function displayFilteredData(data) {
     });
 }
 
+/* ===== Génération de groupes uniques (Step 2.3 - optionnel) ===== */
+
+document.getElementById('generateUniqueGroupButton').addEventListener('click', generateUniqueGroups);
+
+// Générer des groupes uniques pour chaque utilisateur (manuelle et automatisée)
+function generateUniqueGroups() {
+    const emailList = document.getElementById('emailList');
+    emailList.innerHTML = ''; // Réinitialiser la liste
+
+    // Générer des groupes uniques pour les données manuelles
+    emailsData.forEach((user, index) => {
+        const group1 = user.group1.split('_')[1]; // Extraire la ville depuis group1 (ex: all_PARIS -> PARIS)
+        const trigram = groupTrigramMap[group1]; // Récupérer le trigramme de la ville
+        const usernameWithoutDomain = user.username.split('@')[0]; // Récupérer le login sans "@epitech.eu"
+
+        // Générer le group2 unique sous la forme "XXX_username"
+        const group2 = `${trigram}_${usernameWithoutDomain}`;
+        user.group2 = group2;
+
+        // Mettre à jour la liste avec group2
+        const listItem = document.createElement('li');
+        listItem.textContent = `${user.username} - ${user.group1} - ${user.role1} - ${group2}`;
+        emailList.appendChild(listItem);
+    });
+
+    // Générer des groupes uniques pour les données filtrées (automatique)
+    filteredData.forEach((item, index) => {
+        const group1 = `all_${item.city.toUpperCase()}`;
+        const trigram = groupTrigramMap[item.city.toUpperCase()]; // Récupérer le trigramme de la ville
+        const usernameWithoutDomain = item.username.split('@')[0]; // Récupérer le login sans "@epitech.eu"
+
+        // Générer le group2 unique sous la forme "XXX_username"
+        const group2 = `${trigram}_${usernameWithoutDomain}`;
+        item.group2 = group2;
+
+        // Mettre à jour la liste avec group2
+        const listItem = document.createElement('li');
+        listItem.textContent = `${item.username} - ${group1} - ${item.idnumber === "staff" ? "teacher" : "student"} - ${group2}`;
+        emailList.appendChild(listItem);
+    });
+
+    isGroup2Generated = true; // Indiquer que les groupes uniques ont été générés
+}
+
+
 /* ===== Génération du CSV (Step 2.4) ===== */
 
 document.getElementById('generateCsvPreviewButton').addEventListener('click', generateCsvPreview);
@@ -221,6 +287,7 @@ function generateCsvPreview() {
                 <td>${course}</td>
                 <td>${data.group1}</td>
                 <td>${data.role1}</td>
+                <td>${data.group2}</td> <!-- Afficher la valeur de Group2 -->
             `;
             tableBody.appendChild(row);
         });
@@ -232,14 +299,14 @@ function generateCsvPreview() {
 // Télécharger le CSV
 function downloadCsv() {
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "Username;Course1;Group1;Role1\n";
+    csvContent += "Username;Course1;Group1;Role1" + (isGroup2Generated ? ";Group2\n" : "\n");
 
     const userData = getAllUserData(); // Obtenir les données combinées
 
     selectedCourses.forEach(course => {
         userData.forEach(data => {
-            const row = `${data.username};${course};${data.group1};${data.role1}`;
-            csvContent += row + "\n";
+            const row = `${data.username};${course};${data.group1};${data.role1}` + (isGroup2Generated ? `;${data.group2}\n` : "\n");
+            csvContent += row;
         });
     });
 
@@ -258,24 +325,38 @@ function getAllUserData() {
 
     // Ajouter les données de la méthode manuelle
     emailsData.forEach(emailData => {
+        const group1 = emailData.group1.split('_')[1]; // Extraire la ville depuis group1 (ex: all_PARIS -> PARIS)
+        const trigram = groupTrigramMap[group1]; // Récupérer le trigramme de la ville
+        const usernameWithoutDomain = emailData.username.split('@')[0]; // Récupérer le login sans "@epitech.eu"
+        
+        // Générer le group2 unique sous la forme "XXX_username"
+        const group2 = `${trigram}_${usernameWithoutDomain}`;
+        
         allData.push({
             username: emailData.username,
             group1: emailData.group1,
-            role1: emailData.role1
+            role1: emailData.role1,
+            group2: isGroup2Generated ? group2 : "" // Utiliser le trigramme correct
         });
     });
 
     // Ajouter les données de la méthode automatisée
     filteredData.forEach(item => {
         const group1 = `all_${item.city.toUpperCase()}`;
-        const role1 = item.idnumber === "staff" ? "teacher" : "student";
+        const trigram = groupTrigramMap[item.city.toUpperCase()]; // Récupérer le trigramme de la ville
+        const usernameWithoutDomain = item.username.split('@')[0]; // Récupérer le login sans "@epitech.eu"
+        
+        // Générer le group2 unique sous la forme "XXX_username"
+        const group2 = `${trigram}_${usernameWithoutDomain}`;
 
         allData.push({
             username: item.username,
             group1: group1,
-            role1: role1
+            role1: item.idnumber === "staff" ? "teacher" : "student",
+            group2: isGroup2Generated ? group2 : "" // Utiliser le trigramme correct
         });
     });
 
     return allData;
 }
+

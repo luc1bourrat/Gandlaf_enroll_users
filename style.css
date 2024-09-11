@@ -35,7 +35,7 @@ p {
     color: #555;
 }
 
-/* Boutons */
+/* Boutons généraux */
 button {
     margin-top: 10px;
     padding: 10px 20px;
@@ -60,6 +60,7 @@ input[type="file"] {
 /* Textarea pour les adresses e-mail */
 textarea {
     width: 100%;
+    box-sizing: border-box;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -74,7 +75,7 @@ textarea {
     gap: 20px;
 }
 
-.manual-input, .automated-input {
+.manual-input, .automated-input, .optional-unique-group {
     flex: 1;
     background-color: #f9f9f9;
     padding: 15px;
@@ -82,39 +83,70 @@ textarea {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
-.manual-input {
-    border-left: 5px solid #0091d3; /* Couleur principale pour la bordure manuelle */
+.optional-unique-group {
+    margin-top: 20px;
+}
+
+/* Délimitation des sections spécifiques avec bordures */
+.manual-input, .optional-unique-group {
+    border-left: 5px solid #0091d3; /* Couleur principale pour la bordure */
 }
 
 .automated-input {
     border-left: 5px solid #33a7dd; /* Nuance pour la méthode automatisée */
 }
 
-.manual-input h3, .automated-input h3 {
+/* Titres des sous-sections */
+.manual-input h3, .automated-input h3, .optional-unique-group h3 {
     font-size: 1.25em;
     color: #333;
 }
 
-/* Table (Aperçu du CSV) */
+/* ===== Style pour le tableau amélioré (Step 2.4) ===== */
+
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate; /* Utilise 'separate' pour permettre l'espacement entre les cellules */
+    border-spacing: 0; /* Définit l'espacement entre les cellules */
     margin-top: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ombre subtile pour l'effet visuel */
+    border-radius: 8px; /* Coins arrondis pour le tableau */
+    overflow: hidden; /* Assure que les arrondis sont visibles */
 }
 
-table th, table td {
-    padding: 10px;
+table thead th {
+    background-color: #0091d3; /* Couleur principale pour l'entête */
+    color: white;
+    padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+    border: none; /* Retirer les bordures */
 }
 
-table th {
-    background-color: #f0f0f0;
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Alternance de couleur pour les lignes paires */
 }
 
 table tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f1f1f1; /* Couleur au survol */
 }
+
+table th, table td {
+    padding: 12px;
+    border: none; /* Supprime toutes les bordures */
+}
+
+/* Bordures arrondies uniquement sur les premières et dernières colonnes */
+table th:first-child, table td:first-child {
+    border-top-left-radius: 8px; /* Arrondi en haut à gauche */
+    border-bottom-left-radius: 8px; /* Arrondi en bas à gauche */
+}
+
+table th:last-child, table td:last-child {
+    border-top-right-radius: 8px; /* Arrondi en haut à droite */
+    border-bottom-right-radius: 8px; /* Arrondi en bas à droite */
+}
+
 
 /* Délimitation des étapes */
 .section-header {

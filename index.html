@@ -49,7 +49,6 @@
                     <button id="processEmailsButton">Valider les adresses e-mail</button>
                 </div>
             </div>
-            
 
             <!-- Partie droite : Méthode automatisée -->
             <div class="automated-input">
@@ -69,23 +68,32 @@
             </div>
         </div>
 
+        <!-- Nouvelle section : Optionnel - Ajouter un groupe unique pour chaque utilisateur -->
+        <div class="optional-unique-group">
+            <h3>Optionnel : ajouter un groupe unique pour chaque utilisateur</h3>
+            <p>Cliquez sur le bouton ci-dessous si vous souhaitez générer un groupe unique pour chaque utilisateur, cela peut être nécessaire pour des modules comme les piscines.</p>
+            <button id="generateUniqueGroupButton">Générer des groupes uniques</button>
+        </div>
+
         <!-- Output commun : liste des utilisateurs générée -->
         <ul id="emailList">
             <!-- La liste des adresses e-mail et des menus déroulants pour les groupes sera affichée ici -->
         </ul>
     </section>
 
+
     <!-- Step 2.4: Visualiser et télécharger le CSV -->
     <section>
         <h2>Step 2.4: Visualiser et télécharger le CSV</h2>
         <button id="generateCsvPreviewButton">Générer l'aperçu du CSV</button>
-        <table id="csvPreviewTable" border="1">
+        <table id="csvPreviewTable" border="0">
             <thead>
                 <tr>
                     <th>Username</th>
                     <th>Course1</th>
                     <th>Group1</th>
                     <th>Role1</th>
+                    <th>Group2</th> <!-- Ajout correct de la colonne Group2 -->
                 </tr>
             </thead>
             <tbody>
@@ -94,6 +102,7 @@
         </table>
         <button id="downloadCsvButton" style="display: none;">Télécharger le CSV</button>
     </section>
+
 
     <!-- Step 3 placeholder -->
     <section>
