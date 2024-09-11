@@ -360,3 +360,13 @@ function getAllUserData() {
     return allData;
 }
 
+// Scroll vers la Step 2.4
+document.getElementById('scrollToStep24').addEventListener('click', function () {
+    document.getElementById('step24').scrollIntoView({ behavior: 'smooth' });
+});
+
+// Scroll vers la Step 3
+document.getElementById('scrollToStep3').addEventListener('click', function () {
+    document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
+});
+

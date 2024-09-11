@@ -75,6 +75,11 @@
             <button id="generateUniqueGroupButton">Générer des groupes uniques</button>
         </div>
 
+        <!-- Bouton pour passer à la Step 2.4 -->
+        <div class="scroll-next">
+            <button id="scrollToStep24" class="scroll-btn">&#x25BC;</button>
+        </div>
+
         <!-- Output commun : liste des utilisateurs générée -->
         <ul id="emailList">
             <!-- La liste des adresses e-mail et des menus déroulants pour les groupes sera affichée ici -->
@@ -83,9 +88,13 @@
 
 
     <!-- Step 2.4: Visualiser et télécharger le CSV -->
-    <section>
+    <section id="step24">
         <h2>Step 2.4: Visualiser et télécharger le CSV</h2>
         <button id="generateCsvPreviewButton">Générer l'aperçu du CSV</button>
+        <!-- Bouton pour descendre vers l'étape 3 -->
+        <div class="scroll-next">
+            <button id="scrollToStep3" class="scroll-btn">&#x25BC;</button>
+        </div>
         <table id="csvPreviewTable" border="0">
             <thead>
                 <tr>
@@ -105,7 +114,7 @@
 
 
     <!-- Step 3 placeholder -->
-    <section>
+    <section id="step3">
         <h2>Step 3</h2>
         <p>Maintenant, il vous faut importer le fichier CSV dans Gandalf. Voici les étapes à suivre :
             <ul>
