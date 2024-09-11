@@ -98,8 +98,8 @@ function processEmails() {
         // Création du menu déroulant pour role1
         let selectRole = `
             <select id="roleSelect${index}" onchange="updateRole(${index})">
-                <option value="teacher" selected>teacher</option>
-                <option value="student">student</option>
+                <option value="student" selected>student</option>
+                <option value="teacher">teacher</option>
             </select>
         `;
 
