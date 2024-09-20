@@ -1,6 +1,6 @@
 /* ===== Style général ===== */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
     line-height: 1.6;
     background-color: #f7f7f7;
     margin: 0;
@@ -51,6 +51,25 @@ button:hover {
     background-color: #33a7dd; /* Survol avec nuance de bleu */
 }
 
+#yearButtons {
+    margin: 10px 0;
+}
+
+#yearButtons button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    background-color: #0091d3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+#yearButtons button:hover {
+    background-color: #33a7dd; /* Changer légèrement la couleur au survol */
+}
+
 /* Champs d'entrée de fichier */
 input[type="file"] {
     display: block;
@@ -64,7 +83,7 @@ textarea {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
     margin-bottom: 10px;
 }
 
@@ -75,7 +94,9 @@ textarea {
     gap: 20px;
 }
 
-.manual-input, .automated-input, .optional-unique-group {
+.manual-input,
+.automated-input,
+.optional-unique-group {
     flex: 1;
     background-color: #f9f9f9;
     padding: 15px;
@@ -88,7 +109,8 @@ textarea {
 }
 
 /* Délimitation des sections spécifiques avec bordures */
-.manual-input, .optional-unique-group {
+.manual-input,
+.optional-unique-group {
     border-left: 5px solid #0091d3; /* Couleur principale pour la bordure */
 }
 
@@ -97,7 +119,9 @@ textarea {
 }
 
 /* Titres des sous-sections */
-.manual-input h3, .automated-input h3, .optional-unique-group h3 {
+.manual-input h3,
+.automated-input h3,
+.optional-unique-group h3 {
     font-size: 1.25em;
     color: #333;
 }
@@ -131,22 +155,24 @@ table tbody tr:hover {
     background-color: #f1f1f1; /* Couleur au survol */
 }
 
-table th, table td {
+table th,
+table td {
     padding: 12px;
     border: none; /* Supprime toutes les bordures */
 }
 
 /* Bordures arrondies uniquement sur les premières et dernières colonnes */
-table th:first-child, table td:first-child {
+table th:first-child,
+table td:first-child {
     border-top-left-radius: 8px; /* Arrondi en haut à gauche */
     border-bottom-left-radius: 8px; /* Arrondi en bas à gauche */
 }
 
-table th:last-child, table td:last-child {
+table th:last-child,
+table td:last-child {
     border-top-right-radius: 8px; /* Arrondi en haut à droite */
     border-bottom-right-radius: 8px; /* Arrondi en bas à droite */
 }
-
 
 /* Délimitation des étapes */
 .section-header {

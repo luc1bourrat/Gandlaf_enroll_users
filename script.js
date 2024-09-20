@@ -70,19 +70,66 @@ function handleFileSelect(event) {
     }
 }
 
-// Afficher les courses1 du JSON dans une liste avec des cases à cocher
 function displayCourses(data) {
     const courseList = document.getElementById("courseList");
     courseList.innerHTML = ""; // Réinitialiser la liste actuelle
-    courses = data.map((item) => item.course1); // Extraire uniquement les courses1
+
+    courses = data.map((item) => item.course1).sort(); // Extraire et trier les courses1
+
+    const years = new Set(); // Set pour stocker les années uniques
 
     courses.forEach((course, index) => {
+        const year = course.split("_").pop(); // Extraire l'année après le dernier "_"
+        years.add(year); // Ajouter l'année au set
+
         const listItem = document.createElement("li");
         listItem.innerHTML = `
             <input type="checkbox" id="course${index}" value="${course}">
             <label for="course${index}">${course}</label>
         `;
         courseList.appendChild(listItem);
+    });
+
+    generateYearButtons(Array.from(years)); // Générer les boutons pour chaque année
+}
+
+function generateYearButtons(years) {
+    const buttonContainer = document.getElementById("yearButtons");
+    buttonContainer.innerHTML = ""; // Vider le conteneur des boutons existants
+
+    // Ajouter le texte "Sélection rapide :"
+    const quickSelectText = document.createElement("span");
+    quickSelectText.textContent = "Sélection rapide : ";
+    quickSelectText.style.fontWeight = "bold"; // Pour un peu de style
+    buttonContainer.appendChild(quickSelectText);
+
+    // Générer un bouton pour chaque année
+    years.forEach((year) => {
+        const button = document.createElement("button");
+        button.textContent = year; // Afficher simplement l'année sur le bouton
+        button.addEventListener("click", () => selectCoursesByYear(year)); // Ajouter l'événement de clic
+        buttonContainer.appendChild(button);
+    });
+}
+
+function selectCoursesByYear(year) {
+    const checkboxes = document.querySelectorAll(
+        '#courseList input[type="checkbox"]'
+    );
+    let allSelected = true;
+
+    // Vérifier si tous les cours de cette année sont déjà sélectionnés
+    checkboxes.forEach((checkbox) => {
+        if (checkbox.value.includes(year) && !checkbox.checked) {
+            allSelected = false; // Si un seul élément n'est pas sélectionné, on désactive cette variable
+        }
+    });
+
+    // Si tous les éléments sont sélectionnés, on les désélectionne
+    checkboxes.forEach((checkbox) => {
+        if (checkbox.value.includes(year)) {
+            checkbox.checked = !allSelected; // Inverser la sélection selon l'état général
+        }
     });
 }
 
