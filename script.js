@@ -345,8 +345,8 @@ function generateCsvPreview() {
         return;
     }
 
-    // Réinitialiser le contenu du CSV
-    csvContent = "username;course1;role1;group1;group2\n";
+    // Réinitialiser le contenu du CSV avec l'ajout de course2
+    csvContent = "username;course1;course2;role1;group1;group2\n";
 
     // Parcourir toutes les checkboxes présentes dans le DOM
     const checkboxes = document.querySelectorAll('#courseList input[type="checkbox"]');
@@ -354,38 +354,35 @@ function generateCsvPreview() {
     // Remplir le tableau d'aperçu et générer le CSV pour chaque cours sélectionné
     checkboxes.forEach((checkbox) => {
         if (checkbox.checked) {
-            const course = checkbox.value;
+            const course1 = checkbox.value;
             const tag = checkbox.dataset.tag; // Récupérer le tag
-
-            console.log(`Traitement du cours : ${course}, avec le tag : ${tag}`);  // Debugging
 
             userData.forEach((data) => {
                 const row = document.createElement("tr");
 
                 // Si le tag est "individualProject", générer un group2 unique
                 let group2 = "";
+                let course2 = "";
                 if (tag && tag.trim().toLowerCase() === "individualproject") {
                     const group1 = data.group1.split("_")[1];
                     const trigram = groupTrigramMap[group1];
                     const usernameWithoutDomain = data.username.split("@")[0];
                     group2 = `${trigram}_${usernameWithoutDomain}`;
-
-                    console.log(`Génération du group2 pour ${data.username}: ${group2}`);  // Debugging
-                } else {
-                    console.log(`Pas de group2 généré pour ${data.username} avec le cours : ${course}`);
+                    course2 = course1;
                 }
 
                 row.innerHTML = `
                     <td>${data.username}</td>
-                    <td>${course}</td>
+                    <td>${course1}</td>
+                    <td>${course2}</td>
                     <td>${data.role1}</td>
                     <td>${data.group1}</td>
                     <td>${group2}</td>
                 `;
                 tableBody.appendChild(row);
 
-                // Ajouter les données au CSV
-                csvContent += `${data.username};${course};${data.role1};${data.group1};${group2}\n`;
+                // Ajouter les données au CSV, incluant course2
+                csvContent += `${data.username};${course1};${course2};${data.role1};${data.group1};${group2}\n`;
             });
         }
     });
