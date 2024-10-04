@@ -383,17 +383,27 @@ function generateCsvPreview() {
 // Télécharger le CSV
 function downloadCsv() {
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent +=
-        "Username;Course1;Group1;Role1" +
-        (isGroup2Generated ? ";Group2\n" : "\n");
+    csvContent += "Username;Course1;Role1;Group1;Group2\n"; // Réorganisation des colonnes
 
     const userData = getAllUserData(); // Obtenir les données combinées
 
-    selectedCourses.forEach((course) => {
+    selectedCourses.forEach((course, index) => {
+        const checkbox = document.querySelector(`#course${index}`);
+        const tag = checkbox.dataset.tag; // Récupérer le tag
+
         userData.forEach((data) => {
-            const row =
-                `${data.username};${course};${data.group1};${data.role1}` +
-                (isGroup2Generated ? `;${data.group2}\n` : "\n");
+            let group2 = "";
+
+            // Si le tag est "individualProject", générer un group2 unique
+            if (tag === "individualProject") {
+                const group1 = data.group1.split("_")[1]; // Récupérer la ville du group1
+                const trigram = groupTrigramMap[group1]; // Trigramme de la ville
+                const usernameWithoutDomain = data.username.split("@")[0]; // Username sans @epitech.eu
+                group2 = `${trigram}_${usernameWithoutDomain}`; // Générer group2
+            }
+
+            // Ajouter la ligne au CSV
+            const row = `${data.username};${course};${data.role1};${data.group1};${group2}\n`;
             csvContent += row;
         });
     });
