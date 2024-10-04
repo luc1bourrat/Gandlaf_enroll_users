@@ -329,6 +329,9 @@ document
     .getElementById("downloadCsvButton")
     .addEventListener("click", downloadCsv);
 
+// Variable globale pour stocker le CSV
+let csvContent = "";
+
 function generateCsvPreview() {
     const tableBody = document.querySelector("#csvPreviewTable tbody");
     tableBody.innerHTML = ""; // Réinitialiser le tableau actuel
@@ -342,73 +345,57 @@ function generateCsvPreview() {
         return;
     }
 
-    // Remplir le tableau d'aperçu
-    selectedCourses.forEach((course) => {
-        // On cherche la checkbox correspondante au cours sélectionné en comparant avec `value`
-        const checkbox = Array.from(document.querySelectorAll('#courseList input[type="checkbox"]')).find(cb => cb.value === course);
-        const tag = checkbox ? checkbox.getAttribute('data-tag') : '';
+    // Réinitialiser le contenu du CSV
+    csvContent = "username;course1;role1;group1;group2\n";
 
-        console.log(`Traitement du cours : ${course}, avec le tag : "${tag}"`);
+    // Parcourir toutes les checkboxes présentes dans le DOM
+    const checkboxes = document.querySelectorAll('#courseList input[type="checkbox"]');
 
-        userData.forEach((data) => {
-            const row = document.createElement("tr");
+    // Remplir le tableau d'aperçu et générer le CSV pour chaque cours sélectionné
+    checkboxes.forEach((checkbox) => {
+        if (checkbox.checked) {
+            const course = checkbox.value;
+            const tag = checkbox.dataset.tag; // Récupérer le tag
 
-            // Si le tag est "individualProject", on génère un group2 unique
-            let group2 = "";
-            if (tag === "individualProject") {
-                console.log(`Tag trouvé "individualProject" pour le cours : ${course}`);
-                const group1 = data.group1.split("_")[1]; // Extraire la ville
-                const trigram = groupTrigramMap[group1]; // Récupérer le trigramme associé à la ville
-                const usernameWithoutDomain = data.username.split("@")[0]; // Récupérer le login sans le domaine
-                group2 = `${trigram}_${usernameWithoutDomain}`; // Générer le group2
-                console.log(`Génération du group2 pour ${data.username}: ${group2}`);
-            } else {
-                console.log(`Pas de group2 généré pour ${data.username} avec le cours : ${course}`);
-            }
+            console.log(`Traitement du cours : ${course}, avec le tag : ${tag}`);  // Debugging
 
-            row.innerHTML = `
+            userData.forEach((data) => {
+                const row = document.createElement("tr");
+
+                // Si le tag est "individualProject", générer un group2 unique
+                let group2 = "";
+                if (tag && tag.trim().toLowerCase() === "individualproject") {
+                    const group1 = data.group1.split("_")[1];
+                    const trigram = groupTrigramMap[group1];
+                    const usernameWithoutDomain = data.username.split("@")[0];
+                    group2 = `${trigram}_${usernameWithoutDomain}`;
+
+                    console.log(`Génération du group2 pour ${data.username}: ${group2}`);  // Debugging
+                } else {
+                    console.log(`Pas de group2 généré pour ${data.username} avec le cours : ${course}`);
+                }
+
+                row.innerHTML = `
                     <td>${data.username}</td>
                     <td>${course}</td>
-                    <td>${data.role1}</td> <!-- Déplacé ici -->
+                    <td>${data.role1}</td>
                     <td>${data.group1}</td>
                     <td>${group2}</td>
                 `;
-            tableBody.appendChild(row); // Ajouter la ligne au tableau
-        });
+                tableBody.appendChild(row);
+
+                // Ajouter les données au CSV
+                csvContent += `${data.username};${course};${data.role1};${data.group1};${group2}\n`;
+            });
+        }
     });
 
     document.getElementById("downloadCsvButton").style.display = "block"; // Afficher le bouton de téléchargement
 }
 
-// Télécharger le CSV
+// Télécharger le CSV sans régénérer
 function downloadCsv() {
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "Username;Course1;Role1;Group1;Group2\n"; // Réorganisation des colonnes
-
-    const userData = getAllUserData(); // Obtenir les données combinées
-
-    selectedCourses.forEach((course, index) => {
-        const checkbox = document.querySelector(`#course${index}`);
-        const tag = checkbox.dataset.tag; // Récupérer le tag
-
-        userData.forEach((data) => {
-            let group2 = "";
-
-            // Si le tag est "individualProject", générer un group2 unique
-            if (tag === "individualProject") {
-                const group1 = data.group1.split("_")[1]; // Récupérer la ville du group1
-                const trigram = groupTrigramMap[group1]; // Trigramme de la ville
-                const usernameWithoutDomain = data.username.split("@")[0]; // Username sans @epitech.eu
-                group2 = `${trigram}_${usernameWithoutDomain}`; // Générer group2
-            }
-
-            // Ajouter la ligne au CSV
-            const row = `${data.username};${course};${data.role1};${data.group1};${group2}\n`;
-            csvContent += row;
-        });
-    });
-
-    const encodedUri = encodeURI(csvContent);
+    const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
 
     // Générer l'horodatage dans un format plus lisible
     const now = new Date();
