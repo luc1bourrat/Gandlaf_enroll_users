@@ -74,17 +74,25 @@ function displayCourses(data) {
     const courseList = document.getElementById("courseList");
     courseList.innerHTML = ""; // Réinitialiser la liste actuelle
 
-    courses = data.map((item) => item.course1).sort(); // Extraire et trier les courses1
+    // Extraire les courses1 et trier alphabétiquement
+    const sortedCourses = data
+        .map((item) => item)
+        .sort((a, b) => a.course1.localeCompare(b.course1));
 
     const years = new Set(); // Set pour stocker les années uniques
 
-    courses.forEach((course, index) => {
+    // Parcourir les cours triés
+    sortedCourses.forEach((courseData, index) => {
+        const course = courseData.course1;
         const year = course.split("_").pop(); // Extraire l'année après le dernier "_"
         years.add(year); // Ajouter l'année au set
 
+        // Vérification du tag avant de l'ajouter à la checkbox
+        console.log(`Attribution du tag pour le cours ${course}: ${courseData.tag}`);
+
         const listItem = document.createElement("li");
         listItem.innerHTML = `
-            <input type="checkbox" id="course${index}" value="${course}">
+            <input type="checkbox" id="course${index}" value="${course}" data-tag="${courseData.tag}">
             <label for="course${index}">${course}</label>
         `;
         courseList.appendChild(listItem);
@@ -312,54 +320,6 @@ function displayFilteredData(data) {
     });
 }
 
-/* ===== Génération de groupes uniques (Step 2.3 - optionnel) ===== */
-
-document
-    .getElementById("generateUniqueGroupButton")
-    .addEventListener("click", generateUniqueGroups);
-
-// Générer des groupes uniques pour chaque utilisateur (manuelle et automatisée)
-function generateUniqueGroups() {
-    const emailList = document.getElementById("emailList");
-    emailList.innerHTML = ""; // Réinitialiser la liste
-
-    // Générer des groupes uniques pour les données manuelles
-    emailsData.forEach((user, index) => {
-        const group1 = user.group1.split("_")[1]; // Extraire la ville depuis group1 (ex: all_PARIS -> PARIS)
-        const trigram = groupTrigramMap[group1]; // Récupérer le trigramme de la ville
-        const usernameWithoutDomain = user.username.split("@")[0]; // Récupérer le login sans "@epitech.eu"
-
-        // Générer le group2 unique sous la forme "XXX_username"
-        const group2 = `${trigram}_${usernameWithoutDomain}`;
-        user.group2 = group2;
-
-        // Mettre à jour la liste avec group2
-        const listItem = document.createElement("li");
-        listItem.textContent = `${user.username} - ${user.group1} - ${user.role1} - ${group2}`;
-        emailList.appendChild(listItem);
-    });
-
-    // Générer des groupes uniques pour les données filtrées (automatique)
-    filteredData.forEach((item, index) => {
-        const group1 = `all_${item.city.toUpperCase()}`;
-        const trigram = groupTrigramMap[item.city.toUpperCase()]; // Récupérer le trigramme de la ville
-        const usernameWithoutDomain = item.username.split("@")[0]; // Récupérer le login sans "@epitech.eu"
-
-        // Générer le group2 unique sous la forme "XXX_username"
-        const group2 = `${trigram}_${usernameWithoutDomain}`;
-        item.group2 = group2;
-
-        // Mettre à jour la liste avec group2
-        const listItem = document.createElement("li");
-        listItem.textContent = `${item.username} - ${group1} - ${
-            item.idnumber === "staff" ? "teacher" : "student"
-        } - ${group2}`;
-        emailList.appendChild(listItem);
-    });
-
-    isGroup2Generated = true; // Indiquer que les groupes uniques ont été générés
-}
-
 /* ===== Génération du CSV (Step 2.4) ===== */
 
 document
@@ -369,7 +329,6 @@ document
     .getElementById("downloadCsvButton")
     .addEventListener("click", downloadCsv);
 
-// Générer l'aperçu du CSV
 function generateCsvPreview() {
     const tableBody = document.querySelector("#csvPreviewTable tbody");
     tableBody.innerHTML = ""; // Réinitialiser le tableau actuel
@@ -385,16 +344,36 @@ function generateCsvPreview() {
 
     // Remplir le tableau d'aperçu
     selectedCourses.forEach((course) => {
+        // On cherche la checkbox correspondante au cours sélectionné en comparant avec `value`
+        const checkbox = Array.from(document.querySelectorAll('#courseList input[type="checkbox"]')).find(cb => cb.value === course);
+        const tag = checkbox ? checkbox.getAttribute('data-tag') : '';
+
+        console.log(`Traitement du cours : ${course}, avec le tag : "${tag}"`);
+
         userData.forEach((data) => {
             const row = document.createElement("tr");
+
+            // Si le tag est "individualProject", on génère un group2 unique
+            let group2 = "";
+            if (tag === "individualProject") {
+                console.log(`Tag trouvé "individualProject" pour le cours : ${course}`);
+                const group1 = data.group1.split("_")[1]; // Extraire la ville
+                const trigram = groupTrigramMap[group1]; // Récupérer le trigramme associé à la ville
+                const usernameWithoutDomain = data.username.split("@")[0]; // Récupérer le login sans le domaine
+                group2 = `${trigram}_${usernameWithoutDomain}`; // Générer le group2
+                console.log(`Génération du group2 pour ${data.username}: ${group2}`);
+            } else {
+                console.log(`Pas de group2 généré pour ${data.username} avec le cours : ${course}`);
+            }
+
             row.innerHTML = `
-                <td>${data.username}</td>
-                <td>${course}</td>
-                <td>${data.group1}</td>
-                <td>${data.role1}</td>
-                <td>${data.group2}</td> <!-- Afficher la valeur de Group2 -->
-            `;
-            tableBody.appendChild(row);
+                    <td>${data.username}</td>
+                    <td>${course}</td>
+                    <td>${data.role1}</td> <!-- Déplacé ici -->
+                    <td>${data.group1}</td>
+                    <td>${group2}</td>
+                `;
+            tableBody.appendChild(row); // Ajouter la ligne au tableau
         });
     });
 
