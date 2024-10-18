@@ -88,7 +88,9 @@ function displayCourses(data) {
         years.add(year); // Ajouter l'année au set
 
         // Vérification du tag avant de l'ajouter à la checkbox
-        console.log(`Attribution du tag pour le cours ${course}: ${courseData.tag}`);
+        console.log(
+            `Attribution du tag pour le cours ${course}: ${courseData.tag}`
+        );
 
         const listItem = document.createElement("li");
         listItem.innerHTML = `
@@ -345,11 +347,13 @@ function generateCsvPreview() {
         return;
     }
 
-    // Réinitialiser le contenu du CSV avec l'ajout de course2
-    csvContent = "username;course1;course2;role1;group1;group2\n";
+    // Réinitialiser le contenu du CSV avec les colonnes course2, role2 et group2
+    csvContent = "username;course1;course2;role1;role2;group1;group2\n";
 
     // Parcourir toutes les checkboxes présentes dans le DOM
-    const checkboxes = document.querySelectorAll('#courseList input[type="checkbox"]');
+    const checkboxes = document.querySelectorAll(
+        '#courseList input[type="checkbox"]'
+    );
 
     // Remplir le tableau d'aperçu et générer le CSV pour chaque cours sélectionné
     checkboxes.forEach((checkbox) => {
@@ -360,15 +364,23 @@ function generateCsvPreview() {
             userData.forEach((data) => {
                 const row = document.createElement("tr");
 
-                // Si le tag est "individualProject", générer un group2 unique
+                // Par défaut, course2, role2 et group2 sont vides
                 let group2 = "";
                 let course2 = "";
-                if (tag && tag.trim().toLowerCase() === "individualproject") {
+                let role2 = "";
+
+                // Ne générer course2, role2, et group2 que si le role1 est "student" et que le tag est "individualProject"
+                if (
+                    data.role1 === "student" &&
+                    tag &&
+                    tag.trim().toLowerCase() === "individualproject"
+                ) {
                     const group1 = data.group1.split("_")[1];
                     const trigram = groupTrigramMap[group1];
                     const usernameWithoutDomain = data.username.split("@")[0];
                     group2 = `${trigram}_${usernameWithoutDomain}`;
-                    course2 = course1;
+                    course2 = course1; // course2 est identique à course1
+                    role2 = data.role1; // role2 est identique à role1
                 }
 
                 row.innerHTML = `
@@ -376,13 +388,14 @@ function generateCsvPreview() {
                     <td>${course1}</td>
                     <td>${course2}</td>
                     <td>${data.role1}</td>
+                    <td>${role2}</td>
                     <td>${data.group1}</td>
                     <td>${group2}</td>
                 `;
                 tableBody.appendChild(row);
 
-                // Ajouter les données au CSV, incluant course2
-                csvContent += `${data.username};${course1};${course2};${data.role1};${data.group1};${group2}\n`;
+                // Ajouter les données au CSV, incluant course2, role2, et group2 si généré
+                csvContent += `${data.username};${course1};${course2};${data.role1};${role2};${data.group1};${group2}\n`;
             });
         }
     });
